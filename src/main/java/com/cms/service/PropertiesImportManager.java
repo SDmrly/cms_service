@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStreamReader;
@@ -29,6 +30,7 @@ public class PropertiesImportManager implements PropertiesImportService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cms_project_keys", allEntries = true)
     public ImportResultResponse importKeys(UUID projectId, String category, MultipartFile file) {
         log.info("Starting properties import for project: {}, category: {}", projectId, category);
         

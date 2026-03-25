@@ -10,6 +10,7 @@ import com.cms.mapper.CmsKeyMapper;
 import com.cms.repository.TranslationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class TranslationManager implements TranslationService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cms_project_keys", allEntries = true)
     public TranslationResponse addOrUpdateTranslation(UUID keyId, TranslationRequest request) {
         log.info("Adding/Updating translation for key: {}, locale: {}", keyId, request.getLocale());
         
@@ -55,6 +57,7 @@ public class TranslationManager implements TranslationService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cms_project_keys", allEntries = true)
     public List<TranslationResponse> bulkUpdateTranslations(UUID projectId, String locale, BulkTranslationRequest request) {
         log.info("Bulk updating translations for project: {}, locale: {}", projectId, locale);
         
@@ -115,6 +118,7 @@ public class TranslationManager implements TranslationService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cms_project_keys", allEntries = true)
     public void deleteTranslation(UUID translationId) {
         log.info("Deleting translation: {}", translationId);
         if (!translationRepository.existsById(translationId)) {

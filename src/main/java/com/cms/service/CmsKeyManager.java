@@ -11,6 +11,8 @@ import com.cms.mapper.CmsKeyMapper;
 import com.cms.repository.CmsKeyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,7 @@ public class CmsKeyManager implements CmsKeyService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cms_project_keys", allEntries = true)
     public CmsKeyResponse createKey(UUID projectId, CmsKeyRequest request) {
         log.info("Creating key '{}' for project: {}", request.getKey(), projectId);
         
@@ -49,6 +52,7 @@ public class CmsKeyManager implements CmsKeyService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cms_project_keys", allEntries = true)
     public CmsKeyResponse updateKey(UUID keyId, CmsKeyRequest request) {
         log.info("Updating key: {}", keyId);
         
@@ -90,6 +94,7 @@ public class CmsKeyManager implements CmsKeyService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "cms_project_keys", key = "#projectCode + '_' + #key + '_' + #locale")
     public CmsKeyValueResponse getKeyValue(String projectCode, String key, String locale) {
         log.info("Fetching value for project: {}, key: {}, locale: {}", projectCode, key, locale);
         
@@ -111,6 +116,7 @@ public class CmsKeyManager implements CmsKeyService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "cms_project_keys", key = "#projectCode + '_' + #locale")
     public Map<String, Object> getAllKeyValues(String projectCode, String locale) {
         log.info("Fetching all values for project: {}, locale: {}", projectCode, locale);
         
@@ -128,6 +134,7 @@ public class CmsKeyManager implements CmsKeyService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cms_project_keys", allEntries = true)
     public CmsKeyResponse toggleKeyStatus(UUID keyId) {
         log.info("Toggling status for key: {}", keyId);
         
@@ -140,6 +147,7 @@ public class CmsKeyManager implements CmsKeyService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "cms_project_keys", allEntries = true)
     public void deleteKey(UUID keyId) {
         log.info("Deleting key: {}", keyId);
         
