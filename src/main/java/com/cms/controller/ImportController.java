@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.lang.NonNull;
 
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class ImportController {
 
     @PostMapping(value = "/{projectId}/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ImportResultResponse importProperties(
-            @PathVariable UUID projectId,
+            @PathVariable @NonNull UUID projectId,
             @RequestParam(required = false, defaultValue = "CONFIG") String category,
             @RequestPart("file") MultipartFile file) {
             

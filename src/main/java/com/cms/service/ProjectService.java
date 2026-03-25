@@ -6,14 +6,15 @@ import com.cms.dto.response.ProjectResponse;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.lang.NonNull;
 
 public interface ProjectService {
     ProjectResponse createProject(ProjectRequest request);
-    ProjectResponse updateProject(UUID projectId, ProjectRequest request);
-    ProjectResponse getProject(UUID projectId);
+    ProjectResponse updateProject(@NonNull UUID projectId, ProjectRequest request);
+    ProjectResponse getProject(@NonNull UUID projectId);
     ProjectResponse getProjectByCode(String code);
     List<ProjectResponse> getActiveProjects();
-    ProjectResponse toggleProjectStatus(UUID projectId);
-    void deleteProject(UUID projectId);
-    Project getProjectEntity(UUID projectId);
+    ProjectResponse toggleProjectStatus(@NonNull UUID projectId);
+    void deleteProject(@NonNull UUID projectId);
+    Project getProjectEntity(@NonNull UUID projectId);
 }

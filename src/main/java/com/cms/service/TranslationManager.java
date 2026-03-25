@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.Objects;
+import org.springframework.lang.NonNull;
 
 @Slf4j
 @Service
@@ -32,7 +34,7 @@ public class TranslationManager implements TranslationService {
     @Override
     @Transactional
     @CacheEvict(value = "cms_project_keys", allEntries = true)
-    public TranslationResponse addOrUpdateTranslation(UUID keyId, TranslationRequest request) {
+    public TranslationResponse addOrUpdateTranslation(@NonNull UUID keyId, TranslationRequest request) {
         log.info("Adding/Updating translation for key: {}, locale: {}", keyId, request.getLocale());
         
         CmsKey cmsKey = cmsKeyService.getCmsKeyEntity(keyId);
@@ -51,14 +53,14 @@ public class TranslationManager implements TranslationService {
                     .build();
         }
         
-        Translation savedTranslation = translationRepository.save(translation);
+        Translation savedTranslation = translationRepository.save(Objects.requireNonNull(translation));
         return cmsKeyMapper.toTranslationResponse(savedTranslation);
     }
 
     @Override
     @Transactional
     @CacheEvict(value = "cms_project_keys", allEntries = true)
-    public List<TranslationResponse> bulkUpdateTranslations(UUID projectId, String locale, BulkTranslationRequest request) {
+    public List<TranslationResponse> bulkUpdateTranslations(@NonNull UUID projectId, String locale, BulkTranslationRequest request) {
         log.info("Bulk updating translations for project: {}, locale: {}", projectId, locale);
         
         List<TranslationResponse> responses = new ArrayList<>();
@@ -72,7 +74,7 @@ public class TranslationManager implements TranslationService {
                 Optional<CmsKey> cmsKeyOpt = cmsKeyService.getKeysByProject(projectId, null).stream()
                         .filter(k -> k.getKey().equals(keyName))
                         .findFirst()
-                        .map(k -> cmsKeyService.getCmsKeyEntity(k.getId()));
+                        .map(k -> cmsKeyService.getCmsKeyEntity(Objects.requireNonNull(k.getId())));
 
                 if (cmsKeyOpt.isEmpty()) {
                     log.warn("Key '{}' not found in project {}, skipping translation", keyName, projectId);
@@ -95,7 +97,7 @@ public class TranslationManager implements TranslationService {
                             .build();
                 }
                 
-                Translation saved = translationRepository.save(translation);
+                Translation saved = translationRepository.save(Objects.requireNonNull(translation));
                 responses.add(cmsKeyMapper.toTranslationResponse(saved));
                 
             } catch (Exception e) {
@@ -108,7 +110,7 @@ public class TranslationManager implements TranslationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TranslationResponse> getTranslations(UUID keyId) {
+    public List<TranslationResponse> getTranslations(@NonNull UUID keyId) {
         log.info("Fetching translations for key: {}", keyId);
         if (!cmsKeyService.getCmsKeyEntity(keyId).getId().equals(keyId)) {
             throw new ResourceNotFoundException("Key not found"); // Simple check
@@ -119,7 +121,7 @@ public class TranslationManager implements TranslationService {
     @Override
     @Transactional
     @CacheEvict(value = "cms_project_keys", allEntries = true)
-    public void deleteTranslation(UUID translationId) {
+    public void deleteTranslation(@NonNull UUID translationId) {
         log.info("Deleting translation: {}", translationId);
         if (!translationRepository.existsById(translationId)) {
             throw new ResourceNotFoundException("Translation not found with ID: " + translationId);

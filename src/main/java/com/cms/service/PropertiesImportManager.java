@@ -16,9 +16,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
+import org.springframework.lang.NonNull;
 
 @Slf4j
 @Service
@@ -31,7 +33,7 @@ public class PropertiesImportManager implements PropertiesImportService {
     @Override
     @Transactional
     @CacheEvict(value = "cms_project_keys", allEntries = true)
-    public ImportResultResponse importKeys(UUID projectId, String category, MultipartFile file) {
+    public ImportResultResponse importKeys(@NonNull UUID projectId, String category, MultipartFile file) {
         log.info("Starting properties import for project: {}, category: {}", projectId, category);
         
         Project project = projectService.getProjectEntity(projectId);
@@ -56,7 +58,7 @@ public class PropertiesImportManager implements PropertiesImportService {
                         existingKey.setDefaultValue(defaultValue);
                         
                         // We do NOT update the ValueType if it already exists, to prevent breaking data
-                        cmsKeyRepository.save(existingKey);
+                        cmsKeyRepository.save(Objects.requireNonNull(existingKey));
                         updated++;
                         log.debug("Updated existing key: {}", keyName);
                     } else {
@@ -69,7 +71,7 @@ public class PropertiesImportManager implements PropertiesImportService {
                                 .active(true)
                                 .build();
                                 
-                        cmsKeyRepository.save(newKey);
+                        cmsKeyRepository.save(Objects.requireNonNull(newKey));
                         created++;
                         log.debug("Created new key: {}", keyName);
                     }

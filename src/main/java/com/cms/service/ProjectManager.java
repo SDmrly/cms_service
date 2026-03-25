@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.lang.NonNull;
 
 @Slf4j
 @Service
@@ -32,7 +33,10 @@ public class ProjectManager implements ProjectService {
             throw new DuplicateResourceException("Project with code '" + request.getCode() + "' already exists");
         }
 
-        Project project = projectMapper.toEntity(request);
+        Project project = java.util.Objects.requireNonNull(
+            projectMapper.toEntity(request), 
+            "Mapped project entity must not be null"
+        );
         Project savedProject = projectRepository.save(project);
         
         return projectMapper.toResponse(savedProject);
@@ -40,7 +44,7 @@ public class ProjectManager implements ProjectService {
 
     @Override
     @Transactional
-    public ProjectResponse updateProject(UUID projectId, ProjectRequest request) {
+    public ProjectResponse updateProject(@NonNull UUID projectId, ProjectRequest request) {
         log.info("Updating project with id: {}", projectId);
         
         Project project = getProjectEntity(projectId);
@@ -58,7 +62,7 @@ public class ProjectManager implements ProjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProjectResponse getProject(UUID projectId) {
+    public ProjectResponse getProject(@NonNull UUID projectId) {
         log.info("Fetching project by id: {}", projectId);
         return projectMapper.toResponse(getProjectEntity(projectId));
     }
@@ -81,7 +85,7 @@ public class ProjectManager implements ProjectService {
 
     @Override
     @Transactional
-    public ProjectResponse toggleProjectStatus(UUID projectId) {
+    public ProjectResponse toggleProjectStatus(@NonNull UUID projectId) {
         log.info("Toggling status for project: {}", projectId);
         Project project = getProjectEntity(projectId);
         project.setActive(!project.isActive());
@@ -92,7 +96,7 @@ public class ProjectManager implements ProjectService {
 
     @Override
     @Transactional
-    public void deleteProject(UUID projectId) {
+    public void deleteProject(@NonNull UUID projectId) {
         log.info("Deleting project: {}", projectId);
         if (!projectRepository.existsById(projectId)) {
             throw new ResourceNotFoundException("Project not found with ID: " + projectId);
@@ -101,7 +105,7 @@ public class ProjectManager implements ProjectService {
     }
 
     @Override
-    public Project getProjectEntity(UUID projectId) {
+    public Project getProjectEntity(@NonNull UUID projectId) {
         return projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + projectId));
     }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.springframework.lang.NonNull;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -36,26 +37,26 @@ public class TranslationController {
     @PostMapping("/keys/{keyId}/translations")
     @ResponseStatus(HttpStatus.OK)
     public TranslationResponse addOrUpdateTranslation(
-            @PathVariable UUID keyId,
+            @NonNull @PathVariable UUID keyId,
             @Valid @RequestBody TranslationRequest request) {
         return translationService.addOrUpdateTranslation(keyId, request);
     }
 
     @GetMapping("/keys/{keyId}/translations")
-    public List<TranslationResponse> getTranslationsForKey(@PathVariable UUID keyId) {
+    public List<TranslationResponse> getTranslationsForKey(@NonNull @PathVariable UUID keyId) {
         return translationService.getTranslations(keyId);
     }
 
     @DeleteMapping("/translations/{translationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTranslation(@PathVariable UUID translationId) {
+    public void deleteTranslation(@NonNull @PathVariable UUID translationId) {
         translationService.deleteTranslation(translationId);
     }
 
     @PostMapping("/projects/{projectId}/translations/bulk")
     @ResponseStatus(HttpStatus.OK)
     public List<TranslationResponse> bulkUpdateTranslations(
-            @PathVariable UUID projectId,
+            @PathVariable @NonNull UUID projectId,
             @RequestParam String locale,
             @Valid @RequestBody BulkTranslationRequest request) {
         return translationService.bulkUpdateTranslations(projectId, locale, request);

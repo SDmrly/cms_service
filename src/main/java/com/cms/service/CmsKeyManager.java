@@ -15,6 +15,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.lang.NonNull;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,7 +35,7 @@ public class CmsKeyManager implements CmsKeyService {
     @Override
     @Transactional
     @CacheEvict(value = "cms_project_keys", allEntries = true)
-    public CmsKeyResponse createKey(UUID projectId, CmsKeyRequest request) {
+    public CmsKeyResponse createKey(@NonNull UUID projectId, CmsKeyRequest request) {
         log.info("Creating key '{}' for project: {}", request.getKey(), projectId);
         
         Project project = projectService.getProjectEntity(projectId);
@@ -53,7 +54,7 @@ public class CmsKeyManager implements CmsKeyService {
     @Override
     @Transactional
     @CacheEvict(value = "cms_project_keys", allEntries = true)
-    public CmsKeyResponse updateKey(UUID keyId, CmsKeyRequest request) {
+    public CmsKeyResponse updateKey(@NonNull UUID keyId, CmsKeyRequest request) {
         log.info("Updating key: {}", keyId);
         
         CmsKey cmsKey = getCmsKeyEntity(keyId);
@@ -72,14 +73,14 @@ public class CmsKeyManager implements CmsKeyService {
 
     @Override
     @Transactional(readOnly = true)
-    public CmsKeyResponse getKey(UUID keyId) {
+    public CmsKeyResponse getKey(@NonNull UUID keyId) {
         log.info("Fetching key: {}", keyId);
         return cmsKeyMapper.toResponse(getCmsKeyEntity(keyId));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CmsKeyResponse> getKeysByProject(UUID projectId, String category) {
+    public List<CmsKeyResponse> getKeysByProject(@NonNull UUID projectId, String category) {
         log.info("Fetching keys for project: {}, category: {}", projectId, category);
         
         List<CmsKey> keys;
@@ -135,7 +136,7 @@ public class CmsKeyManager implements CmsKeyService {
     @Override
     @Transactional
     @CacheEvict(value = "cms_project_keys", allEntries = true)
-    public CmsKeyResponse toggleKeyStatus(UUID keyId) {
+    public CmsKeyResponse toggleKeyStatus(@NonNull UUID keyId) {
         log.info("Toggling status for key: {}", keyId);
         
         CmsKey cmsKey = getCmsKeyEntity(keyId);
@@ -148,7 +149,7 @@ public class CmsKeyManager implements CmsKeyService {
     @Override
     @Transactional
     @CacheEvict(value = "cms_project_keys", allEntries = true)
-    public void deleteKey(UUID keyId) {
+    public void deleteKey(@NonNull UUID keyId) {
         log.info("Deleting key: {}", keyId);
         
         if (!cmsKeyRepository.existsById(keyId)) {
@@ -160,7 +161,7 @@ public class CmsKeyManager implements CmsKeyService {
     // --- Helper Methods ---
 
     @Override
-    public CmsKey getCmsKeyEntity(UUID keyId) {
+    public CmsKey getCmsKeyEntity(@NonNull UUID keyId) {
         return cmsKeyRepository.findById(keyId)
                 .orElseThrow(() -> new ResourceNotFoundException("Key not found with ID: " + keyId));
     }

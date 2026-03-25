@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.lang.NonNull;
 
 @RestController
 @RequestMapping("/api/v1/projects")
@@ -39,25 +40,25 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}")
-    public ProjectResponse getProject(@PathVariable UUID projectId) {
+    public ProjectResponse getProject(@PathVariable @NonNull UUID projectId) {
         return projectService.getProject(projectId);
     }
 
     @PutMapping("/{projectId}")
     public ProjectResponse updateProject(
-            @PathVariable UUID projectId,
+            @PathVariable @NonNull UUID projectId,
             @Valid @RequestBody ProjectRequest request) {
         return projectService.updateProject(projectId, request);
     }
 
     @PatchMapping("/{projectId}/toggle")
-    public ProjectResponse toggleStatus(@PathVariable UUID projectId) {
+    public ProjectResponse toggleStatus(@PathVariable @NonNull UUID projectId) {
         return projectService.toggleProjectStatus(projectId);
     }
 
     @DeleteMapping("/{projectId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteProject(@PathVariable UUID projectId) {
+    public void deleteProject(@PathVariable @NonNull UUID projectId) {
         projectService.deleteProject(projectId);
     }
 }
