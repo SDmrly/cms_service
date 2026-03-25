@@ -5,7 +5,7 @@ Bu proje, Spring Boot tabanlı, PostgreSQL ve Redis kullanan çoklu dil destekli
 ## Teknolojiler
 
 - **Java 21**
-- **Spring Boot 4.0.4**
+- **Spring Boot 3.3.5**
 - **PostgreSQL** (Kalıcı veri yönetimi)
 - **Redis** (Geçici veriler ve önbellekleme)
 - **Flyway** (Veritabanı versiyonlama - İstendiğinde etkinleştirilebilir)
