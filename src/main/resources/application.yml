@@ -6,15 +6,15 @@ spring:
     name: cms-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/cms_db
-    username: cms_user
-    password: cms_password
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/cms_db}
+    username: ${DB_USERNAME:cms_user}
+    password: ${DB_PASSWORD:cms_password}
     driver-class-name: org.postgresql.Driver
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
   jpa:
     hibernate:
@@ -41,3 +41,21 @@ springdoc:
     path: /swagger-ui.html
     tags-sorter: alpha
     operations-sorter: method
+
+# ── JWT ──────────────────────────────────────────────────────────────────────
+jwt:
+  # Production: override via env var JWT_SECRET (openssl rand -base64 64)
+  secret: ${JWT_SECRET:dGhpc0lzQURldmVsb3BtZW50U2VjcmV0S2V5Rm9yQ21zU2VydmljZURvTm90VXNlSW5Qcm9kdWN0aW9uMTIzNDU2Nzg5MA==}
+  access-token-expiry: 3600   # seconds (1 hour)
+  issuer: cms-service
+
+# ── Security ─────────────────────────────────────────────────────────────────
+security:
+  max-failed-attempts: 5
+  lockout-duration: 900       # seconds (15 minutes)
+
+# ── Cookie ───────────────────────────────────────────────────────────────────
+cookie:
+  domain: ${COOKIE_DOMAIN:}
+  secure: ${COOKIE_SECURE:false}   # false for local dev (no HTTPS), true in production
+

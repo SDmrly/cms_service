@@ -18,3 +18,18 @@ spring:
 
   cache:
     type: none
+
+# ── JWT (test) ────────────────────────────────────────────────────────────────
+jwt:
+  # Safe dummy key for tests — 64+ chars Base64
+  secret: dGVzdFNlY3JldEtleUZvckpXVFVuaXRUZXN0aW5nT25seU5vdEZvclByb2R1Y3Rpb24hISE=
+  access-token-expiry: 3600
+  issuer: cms-service
+
+security:
+  max-failed-attempts: 5
+  lockout-duration: 900
+
+cookie:
+  domain:
+  secure: false   # allow plain HTTP in unit tests
